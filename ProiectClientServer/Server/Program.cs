@@ -14,8 +14,10 @@ namespace Server
         static void Main(string[] args)
         {
             Context context = Context.Instance;
-            TcpListener serverSocket = new TcpListener(LOCAL_IP_ADRESS, PORT);
-            serverSocket.Start();
+            context.ClearDatabase();
+            context.GenerateData();
+            //TcpListener serverSocket = new TcpListener(LOCAL_IP_ADRESS, PORT);
+            //serverSocket.Start();
         }
     }
 }

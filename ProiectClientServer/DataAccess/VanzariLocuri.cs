@@ -6,6 +6,7 @@ using System.Collections.Generic;
 namespace DataAccess
 {
     [Table("VanzariLocuri")]
+    [Serializable]
     public class VanzariLocuri
     {
         [Key]

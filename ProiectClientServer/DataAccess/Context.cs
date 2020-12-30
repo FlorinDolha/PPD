@@ -10,13 +10,14 @@ namespace DataAccess
 
         private DateTime RandomDay()
         {
-            DateTime start = new DateTime(2020, 6, 1);
-            int range = (DateTime.Today - start).Days;
+            DateTime start = new DateTime(2021, 6, 1);
+            int range = (start - DateTime.Today).Days;
             return start.AddDays(random.Next(range));
         }
 
         public void ClearDatabase()
         {
+            ClearSet(Verificari);
             ClearSet(VanzariLocuri);
             ClearSet(Vanzari);
             ClearSet(Spectacole);
@@ -29,7 +30,7 @@ namespace DataAccess
                 Spectacol spectacol = new Spectacol
                 {
                     Data = RandomDay(),
-                    Pret = random.Next(5, 30) + random.NextDouble(),
+                    Pret = random.Next(5, 30) + Math.Round(random.NextDouble(), 2),
                     Titlu = $"Spectacol{i}",
                     Sold = 0,
                 };
@@ -53,16 +54,17 @@ namespace DataAccess
             }
         }
 
-        private Context() { }
+        public Context() { }
 
         public DbSet<Spectacol> Spectacole { get; set; }
         public DbSet<Vanzare> Vanzari { get; set; }
         public DbSet<VanzariLocuri> VanzariLocuri { get; set; }
         public DbSet<Sala> Sala{ get; set; }
+        public DbSet<Verificare> Verificari { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=SpectacoleDB;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=SpectacoleDB;Trusted_Connection=True;MultipleActiveResultSets=true;");
         }
 
         private void ClearSet<T>(DbSet<T> set) where T : class

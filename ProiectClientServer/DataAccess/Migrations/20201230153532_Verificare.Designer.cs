@@ -4,14 +4,16 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20201230153532_Verificare")]
+    partial class Verificare
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +56,12 @@ namespace DataAccess.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<int?>("VerificareId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("VerificareId");
 
                     b.ToTable("Spectacole");
                 });
@@ -78,9 +85,14 @@ namespace DataAccess.Migrations
                     b.Property<double>("Suma")
                         .HasColumnType("float");
 
+                    b.Property<int?>("VerificareId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SpectacolId");
+
+                    b.HasIndex("VerificareId");
 
                     b.ToTable("Vanzari");
                 });
@@ -118,17 +130,22 @@ namespace DataAccess.Migrations
                     b.Property<double>("Sold")
                         .HasColumnType("float");
 
-                    b.Property<int>("SpectacolId")
-                        .HasColumnType("int");
+                    b.Property<double>("SpectacolId")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("VanzareId")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SpectacolId");
-
                     b.ToTable("Verificari");
+                });
+
+            modelBuilder.Entity("DataAccess.Spectacol", b =>
+                {
+                    b.HasOne("DataAccess.Verificare", null)
+                        .WithMany("Spectacole")
+                        .HasForeignKey("VerificareId");
                 });
 
             modelBuilder.Entity("DataAccess.Vanzare", b =>
@@ -138,6 +155,10 @@ namespace DataAccess.Migrations
                         .HasForeignKey("SpectacolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("DataAccess.Verificare", null)
+                        .WithMany("Vanzari")
+                        .HasForeignKey("VerificareId");
 
                     b.Navigation("Spectacol");
                 });
@@ -153,17 +174,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Vanzare");
                 });
 
-            modelBuilder.Entity("DataAccess.Verificare", b =>
-                {
-                    b.HasOne("DataAccess.Spectacol", "Spectacol")
-                        .WithMany()
-                        .HasForeignKey("SpectacolId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Spectacol");
-                });
-
             modelBuilder.Entity("DataAccess.Spectacol", b =>
                 {
                     b.Navigation("Vanzari");
@@ -172,6 +182,13 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Vanzare", b =>
                 {
                     b.Navigation("ListaLocuriVandute");
+                });
+
+            modelBuilder.Entity("DataAccess.Verificare", b =>
+                {
+                    b.Navigation("Spectacole");
+
+                    b.Navigation("Vanzari");
                 });
 #pragma warning restore 612, 618
         }

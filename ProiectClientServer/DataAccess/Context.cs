@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DataAccess
 {
@@ -75,6 +77,40 @@ namespace DataAccess
             }
 
             SaveChanges();
+        }
+
+        private bool VanzareaEstePentruSpectacol(int vanzareId, int spectacolId)
+        {
+            Vanzare vanzare = Vanzari.Find(vanzareId);
+
+            if (vanzare == null)
+            {
+                return false;
+            }
+
+            return vanzare.SpectacolId == spectacolId;
+        }
+
+        /// <summary>
+        /// Cauta primul loc liber pentru spectacolId
+        /// </summary>
+        /// <param name="spectacolId"></param>
+        /// <returns>Returneaza un intreg reprezentand locul liber, sau null daca nu exista</returns>
+        public int? PrimulLocLiber(int spectacolId)
+        {
+            IList<int> locuriSala = Enumerable.Range(1, Sala.Find(1).NrLocuri).ToList();
+
+            IList<int> locuriVandute = VanzariLocuri.Where(vanzareLoc => VanzareaEstePentruSpectacol(vanzareLoc.VanzareId, spectacolId))
+                                                    .Select(vanzareLoc => vanzareLoc.Loc).ToList();
+
+            try
+            {
+                return locuriSala.First(loc => !locuriVandute.Contains(loc));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return null;
+            }
         }
        
     }

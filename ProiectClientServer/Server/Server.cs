@@ -158,6 +158,22 @@ namespace Server
                 Suma = pret * requestVanzare.NrBileteVandute,
             });
 
+            for (int i = 0; i < requestVanzare.NrBileteVandute; i++)
+            {
+                int? locLiber = Context.Instance.PrimulLocLiber(requestVanzare.SpectacolId);
+
+                if (locLiber == null)
+                {
+                    continue;
+                }
+
+                Context.Instance.VanzariLocuri.Add(new VanzariLocuri
+                {
+                    Loc = locLiber.Value,
+                    VanzareId = requestVanzare.SpectacolId,
+                });
+            }
+
             Context.Instance.SaveChanges();
 
             SendMessage(Result.Success, networkStream);

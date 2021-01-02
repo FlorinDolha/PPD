@@ -83,12 +83,12 @@ namespace Server
 
         private void Valideaza()
         {
-            Context context = Context.Instance;
+            UnitOfWork unitOfWork = new UnitOfWork();
             Console.WriteLine("Validez");
-            var spectacole = context.Spectacole.ToList();
+            var spectacole = unitOfWork.SpectacolRepository.Get().ToList();
             foreach (Spectacol spectacol in spectacole) 
             {
-                var vanzari = context.Vanzari.Where(vanzare => vanzare.SpectacolId == spectacol.Id).ToList();
+                var vanzari = unitOfWork.VanzareRepository.Get(vanzare => vanzare.SpectacolId == spectacol.Id).ToList();
 
                 int nrLocuriOcupate = 0;
                 int nrLocuriVandute = 0;
@@ -96,8 +96,8 @@ namespace Server
 
                 foreach (Vanzare vanzare in vanzari)
                 {
-                    int locuriMaxime = context.Sala.Find(1).NrLocuri;
-                    var locuriVandute = context.VanzariLocuri.Where(locVandut => locVandut.VanzareId == vanzare.Id);
+                    int locuriMaxime = unitOfWork.SalaRepository.GetByID(1).NrLocuri;
+                    var locuriVandute = unitOfWork.VanzariLocuriRepository.Get(locVandut => locVandut.VanzareId == vanzare.Id);
 
                     nrLocuriOcupate += locuriVandute.GroupBy(locVandut => locVandut.Loc).Count();
                     nrLocuriVandute += vanzare.NrBileteVandute;
@@ -112,16 +112,17 @@ namespace Server
                     status = "incorect";
                 }
 
-                context.Verificari.Add(new Verificare
+                unitOfWork.VerificareRepository.Insert(new Verificare
                 {
                     SpectacolId = spectacol.Id,
                     Data = DateTime.Now,
                     Sold = spectacol.Sold,
                     Status = status,
                 });
-
-                context.SaveChanges();
             }
+
+            unitOfWork.Save();
+            unitOfWork.Dispose();
         }
 
         private void Work(TcpClient client)
@@ -132,6 +133,7 @@ namespace Server
 
         private void Process(NetworkStream networkStream)
         {
+            UnitOfWork unitOfWork = new UnitOfWork();
             RequestVanzare requestVanzare = Receive(networkStream);
 
             if (requestVanzare == null)
@@ -140,7 +142,7 @@ namespace Server
                 return;
             }
 
-            Spectacol spectacol = Context.Instance.Spectacole.Find(requestVanzare.SpectacolId);
+            Spectacol spectacol = unitOfWork.SpectacolRepository.GetByID(requestVanzare.SpectacolId);
 
             if (spectacol == null)
             {
@@ -150,7 +152,7 @@ namespace Server
 
             double pret = spectacol.Pret;
 
-            Context.Instance.Vanzari.Add(new Vanzare
+            unitOfWork.VanzareRepository.Insert(new Vanzare
             {
                 Data = DateTime.Now,
                 NrBileteVandute = requestVanzare.NrBileteVandute,
@@ -158,23 +160,36 @@ namespace Server
                 Suma = pret * requestVanzare.NrBileteVandute,
             });
 
+            unitOfWork.Save();
+
+            spectacol.Sold += pret * requestVanzare.NrBileteVandute;
+            unitOfWork.SpectacolRepository.Update(spectacol);
+            unitOfWork.Save();
+
+
+            int vanzareId = unitOfWork.VanzareRepository.Get().OrderByDescending(vanzare => vanzare.Id).First().Id;
+
+
             for (int i = 0; i < requestVanzare.NrBileteVandute; i++)
             {
-                int? locLiber = Context.Instance.PrimulLocLiber(requestVanzare.SpectacolId);
+                int? locLiber = unitOfWork.PrimulLocLiber(requestVanzare.SpectacolId);
 
                 if (locLiber == null)
                 {
                     continue;
                 }
 
-                Context.Instance.VanzariLocuri.Add(new VanzariLocuri
+                unitOfWork.VanzariLocuriRepository.Insert(new VanzariLocuri
                 {
                     Loc = locLiber.Value,
-                    VanzareId = requestVanzare.SpectacolId,
+                    VanzareId = vanzareId,
                 });
+
+                unitOfWork.Save();
             }
 
-            Context.Instance.SaveChanges();
+            unitOfWork.Save();
+            unitOfWork.Dispose();
 
             SendMessage(Result.Success, networkStream);
         }

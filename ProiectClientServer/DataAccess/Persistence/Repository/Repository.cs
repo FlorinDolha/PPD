@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-public class GenericRepository<TEntity> where TEntity : class
+public class Repository<TEntity> where TEntity : class
 {
     private Context context;
     private DbSet<TEntity> dbSet;
 
-    public GenericRepository(Context context)
+    public Repository(Context context)
     {
         this.context = context;
         this.dbSet = context.Set<TEntity>();

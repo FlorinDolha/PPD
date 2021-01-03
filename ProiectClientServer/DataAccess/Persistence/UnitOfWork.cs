@@ -6,71 +6,71 @@ using System.Linq;
 public class UnitOfWork : IDisposable
 {
     private Context context = new Context();
-    private GenericRepository<Spectacol> spectacolRepository;
-    private GenericRepository<Vanzare> vanzareRepository;
-    private GenericRepository<VanzariLocuri> vanzariLocuriRepository;
-    private GenericRepository<Verificare> verificareRepository;
-    private GenericRepository<Sala> salaRepository;
+    private Repository<Spectacol> spectacolRepository;
+    private Repository<Vanzare> vanzareRepository;
+    private Repository<VanzariLocuri> vanzariLocuriRepository;
+    private Repository<Verificare> verificareRepository;
+    private Repository<Sala> salaRepository;
 
-    public GenericRepository<Spectacol> SpectacolRepository
+    public Repository<Spectacol> SpectacolRepository
     {
         get
         {
             if (spectacolRepository == null)
             {
-                spectacolRepository = new GenericRepository<Spectacol>(context);
+                spectacolRepository = new Repository<Spectacol>(context);
             }
 
             return spectacolRepository;
         }
     }
 
-    public GenericRepository<Vanzare> VanzareRepository
+    public Repository<Vanzare> VanzareRepository
     {
         get
         {
             if (vanzareRepository == null)
             {
-                vanzareRepository = new GenericRepository<Vanzare>(context);
+                vanzareRepository = new Repository<Vanzare>(context);
             }
 
             return vanzareRepository;
         }
     }
 
-    public GenericRepository<VanzariLocuri> VanzariLocuriRepository
+    public Repository<VanzariLocuri> VanzariLocuriRepository
     {
         get
         {
             if (vanzariLocuriRepository == null)
             {
-                vanzariLocuriRepository = new GenericRepository<VanzariLocuri>(context);
+                vanzariLocuriRepository = new Repository<VanzariLocuri>(context);
             }
 
             return vanzariLocuriRepository;
         }
     }
 
-    public GenericRepository<Verificare> VerificareRepository
+    public Repository<Verificare> VerificareRepository
     {
         get
         {
             if (verificareRepository == null)
             {
-                verificareRepository = new GenericRepository<Verificare>(context);
+                verificareRepository = new Repository<Verificare>(context);
             }
 
             return verificareRepository;
         }
     }
 
-    public GenericRepository<Sala> SalaRepository
+    public Repository<Sala> SalaRepository
     {
         get
         {
             if (salaRepository == null)
             {
-                salaRepository = new GenericRepository<Sala>(context);
+                salaRepository = new Repository<Sala>(context);
             }
 
             return salaRepository;

@@ -136,4 +136,15 @@ public class UnitOfWork : IDisposable
             return null;
         }
     }
+
+    public IList<int> LocuriLibere(int spectacolId)
+    {
+        IList<int> locuriSala = Enumerable.Range(1, SalaRepository.GetByID(1).NrLocuri).ToList();
+
+        IList<int> locuriVandute = VanzariLocuriRepository.Get()
+                                                          .Where(vanzareLoc => VanzareaEstePentruSpectacol(vanzareLoc.VanzareId, spectacolId))
+                                                          .Select(vanzareLoc => vanzareLoc.Loc).ToList();
+
+        return locuriSala.Where(loc => !locuriVandute.Contains(loc)).ToList();
+    }
 }

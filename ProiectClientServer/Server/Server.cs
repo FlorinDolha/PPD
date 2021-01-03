@@ -152,6 +152,8 @@ namespace Server
 
             double pret = spectacol.Pret;
 
+
+            ///Adauga vanzare
             unitOfWork.VanzareRepository.Insert(new Vanzare
             {
                 Data = DateTime.Now,
@@ -162,6 +164,7 @@ namespace Server
 
             unitOfWork.Save();
 
+            ///Actualizeaza sold
             spectacol.Sold += pret * requestVanzare.NrBileteVandute;
             unitOfWork.SpectacolRepository.Update(spectacol);
             unitOfWork.Save();
@@ -169,19 +172,11 @@ namespace Server
 
             int vanzareId = unitOfWork.VanzareRepository.Get().OrderByDescending(vanzare => vanzare.Id).First().Id;
 
-
-            for (int i = 0; i < requestVanzare.NrBileteVandute; i++)
+            foreach (int loc in requestVanzare.Locuri)
             {
-                int? locLiber = unitOfWork.PrimulLocLiber(requestVanzare.SpectacolId);
-
-                if (locLiber == null)
-                {
-                    continue;
-                }
-
                 unitOfWork.VanzariLocuriRepository.Insert(new VanzariLocuri
                 {
-                    Loc = locLiber.Value,
+                    Loc = loc,
                     VanzareId = vanzareId,
                 });
 

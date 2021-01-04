@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+<<<<<<< Updated upstream
 using System;
+=======
+>>>>>>> Stashed changes
 
 namespace DataAccess
 {

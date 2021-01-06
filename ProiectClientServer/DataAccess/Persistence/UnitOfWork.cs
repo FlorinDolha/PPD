@@ -5,12 +5,17 @@ using System.Linq;
 
 public class UnitOfWork : IDisposable
 {
-    private Context context = new Context();
+    private Context context;
     private Repository<Spectacol> spectacolRepository;
     private Repository<Vanzare> vanzareRepository;
     private Repository<VanzariLocuri> vanzariLocuriRepository;
     private Repository<Verificare> verificareRepository;
     private Repository<Sala> salaRepository;
+
+    public UnitOfWork()
+    {
+        context = new Context();
+    }
 
     public Repository<Spectacol> SpectacolRepository
     {

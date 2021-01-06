@@ -70,7 +70,7 @@ namespace Server
             watch.Start();
             while (true)
             {
-                if (watch.Elapsed.TotalSeconds >= 30)
+                if (watch.Elapsed.TotalSeconds >= 120)
                 {
                     throw new DoneException("Server has stopped");
                 }
@@ -158,6 +158,14 @@ namespace Server
             Spectacol spectacol = unitOfWork.SpectacolRepository.GetByID(requestVanzare.SpectacolId);
 
             if (spectacol == null)
+            {
+                SendMessage(Result.Fail, networkStream);
+                return;
+            }
+
+            var locuriLibere = unitOfWork.LocuriLibere(spectacol.Id);
+
+            if (requestVanzare.Locuri.Any(loc => !locuriLibere.Contains(loc)))
             {
                 SendMessage(Result.Fail, networkStream);
                 return;

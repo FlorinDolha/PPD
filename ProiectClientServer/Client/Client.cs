@@ -48,7 +48,7 @@ namespace Client
         public void Start()
         {
             Random random = new Random();
-            int index = random.Next(4);
+            int index = random.Next(5);
             string titlu = Spectacole[index];
 
             IList<int> locuriLibere = ctrl.GetLocuriLibere(titlu);

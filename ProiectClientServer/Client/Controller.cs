@@ -32,7 +32,7 @@ namespace Client
             return rezultat;
         }
 
-        public string CumparaBilet(string titlu, int nrBilete)
+        public string CumparaBilet(string titlu, int nrBilete, List<int> locuri)
         {
             RequestVanzare request = new RequestVanzare();
             UnitOfWork unitOfWork = new UnitOfWork();
@@ -49,13 +49,34 @@ namespace Client
                 }
             }
             request.NrBileteVandute = nrBilete;
-            //request.Locuri = locuri;
+            request.Locuri = locuri;
 
             sendMessage(tcpClient.GetStream(), request);
 
 
             Result response = receiveResponse(tcpClient.GetStream());
             return response.ToString();
+        }
+
+        public IList<int> GetLocuriLibere(string titlu)
+        {
+            RequestLocuriLibere request = new RequestLocuriLibere();
+            UnitOfWork unitOfWork = new UnitOfWork();
+            IList<Spectacol> spectacole = unitOfWork.SpectacolRepository.Get().ToList();
+
+            //unitOfWork.Dispose();
+
+            Spectacol spectacol = null;
+
+            foreach (Spectacol sp in spectacole)
+            {
+                if (sp.Titlu == titlu)
+                {
+                    spectacol = sp;
+                }
+            }
+
+            return unitOfWork.LocuriLibere(spectacol.Id);
         }
     }
 }

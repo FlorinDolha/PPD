@@ -152,7 +152,6 @@ namespace Server
 
             double pret = spectacol.Pret;
 
-
             ///Adauga vanzare
             unitOfWork.VanzareRepository.Insert(new Vanzare
             {

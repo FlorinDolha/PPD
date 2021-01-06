@@ -10,6 +10,6 @@ namespace DataAccess.Dto
 
         public int SpectacolId { get; set; }
 
-        public IList<int> Locuri { get; set; }
+        public List<int> Locuri { get; set; }
     }
 }

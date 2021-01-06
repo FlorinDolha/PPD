@@ -30,6 +30,17 @@ namespace Server
                 unitOfWork.SpectacolRepository.Insert(spectacol);
             }
 
+            Sala sala = new Sala
+            {
+                NrLocuri = 250
+            };
+            unitOfWork.SalaRepository.Insert(sala);
+            Sala sala2 = new Sala
+            {
+                NrLocuri = 270
+            };
+            unitOfWork.SalaRepository.Insert(sala2);
+
             unitOfWork.Save();
             unitOfWork.Dispose();
 

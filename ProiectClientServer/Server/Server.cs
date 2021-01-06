@@ -70,7 +70,7 @@ namespace Server
             watch.Start();
             while (true)
             {
-                if (watch.Elapsed.TotalSeconds >= 120)
+                if (watch.Elapsed.TotalSeconds >= 30)
                 {
                     throw new DoneException("Server has stopped");
                 }
@@ -127,8 +127,21 @@ namespace Server
 
         private void Work(TcpClient client)
         {
-            Process(client.GetStream());
-            clients.Remove(client);
+            while (true)
+            {
+                try
+                {
+                    Process(client.GetStream());
+                }
+                catch
+                {
+                    SendMessage(Result.Fail, client.GetStream());
+                }
+            }
+            //finally
+            //{
+            //    clients.Remove(client);
+            //}
         }
 
         private void Process(NetworkStream networkStream)

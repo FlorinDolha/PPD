@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace Client
 {
@@ -10,24 +12,23 @@ namespace Client
             const string SERVERADRESS = "127.0.0.1";
             const int PORT = 1234;
             TcpClient tcpClient = new TcpClient();
-            bool connect = true;
-            while (connect)
+            tcpClient.Connect(SERVERADRESS, PORT);
+            Controller ctrl = new Controller(tcpClient);
+            Client client = new Client(ctrl);
+            while (true)
             {
                 try
                 {
-                    tcpClient.Connect(SERVERADRESS, PORT);
-                    connect = false;
+                    client.Start();
                 }
-                catch (Exception ex)
+
+                catch (Exception e)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(e.Message);
+                    break;
                 }
+                Thread.Sleep(2000);
             }
-
-            Controller ctrl = new Controller(tcpClient);
-
-            Client ui = new Client(ctrl);
-            ui.Start();
 
             Console.ReadLine();
         }

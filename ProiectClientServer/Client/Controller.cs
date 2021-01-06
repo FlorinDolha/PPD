@@ -32,7 +32,7 @@ namespace Client
             return rezultat;
         }
 
-        public string CumparaBilet(string titlu, int nrBilete, List<int> locuri)
+        public Result CumparaBilet(string titlu, int nrBilete, List<int> locuri)
         {
             RequestVanzare request = new RequestVanzare();
             UnitOfWork unitOfWork = new UnitOfWork();
@@ -55,7 +55,7 @@ namespace Client
 
 
             Result response = receiveResponse(tcpClient.GetStream());
-            return response.ToString();
+            return response;
         }
 
         public IList<int> GetLocuriLibere(string titlu)

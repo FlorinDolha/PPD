@@ -14,8 +14,6 @@ namespace Client
             "Spectacol0",
             "Spectacol1",
             "Spectacol2",
-            "Spectacol3",
-            "Spectacol4",
         };
 
         public Client(Controller ctrl)
@@ -48,7 +46,7 @@ namespace Client
         public void Start()
         {
             Random random = new Random();
-            int index = random.Next(5);
+            int index = random.Next(3);
             string titlu = Spectacole[index];
 
             IList<int> locuriLibere = ctrl.GetLocuriLibere(titlu);

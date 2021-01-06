@@ -13,35 +13,49 @@ namespace Server
             unitOfWork.VanzariLocuriRepository.DeleteAll();
             unitOfWork.VanzareRepository.DeleteAll();
             unitOfWork.SpectacolRepository.DeleteAll();
+            unitOfWork.SalaRepository.DeleteAll();
 
             unitOfWork.Save();
 
-            Random random = new Random();
-            for (int i = 0; i < 5; i++)
+            Spectacol spectacol = new Spectacol
             {
-                Spectacol spectacol = new Spectacol
-                {
-                    Data = Utils.RandomDay(),
-                    Pret = random.Next(5, 30) + Math.Round(random.NextDouble(), 2),
-                    Titlu = $"Spectacol{i}",
-                    Sold = 0,
-                };
-
-                unitOfWork.SpectacolRepository.Insert(spectacol);
-            }
-
-            Sala sala = new Sala
-            {
-                NrLocuri = 250
+                Data = Utils.RandomDay(),
+                Pret = 100,
+                Titlu = "Spectacol0",
+                Sold = 0,
             };
-            unitOfWork.SalaRepository.Insert(sala);
-            Sala sala2 = new Sala
+
+            unitOfWork.SpectacolRepository.Insert(spectacol);
+
+            spectacol = new Spectacol
             {
-                NrLocuri = 270
+                Data = Utils.RandomDay(),
+                Pret = 200,
+                Titlu = "Spectacol1",
+                Sold = 0,
             };
-            unitOfWork.SalaRepository.Insert(sala2);
+
+            unitOfWork.SpectacolRepository.Insert(spectacol);
+
+            spectacol = new Spectacol
+            {
+                Data = Utils.RandomDay(),
+                Pret = 150,
+                Titlu = "Spectacol2",
+                Sold = 0,
+            };
+
+            unitOfWork.SpectacolRepository.Insert(spectacol);
 
             unitOfWork.Save();
+
+            unitOfWork.SalaRepository.Insert(new Sala
+            {
+                NrLocuri = 100
+            });
+
+            unitOfWork.Save();
+
             unitOfWork.Dispose();
 
             Server server = new Server();

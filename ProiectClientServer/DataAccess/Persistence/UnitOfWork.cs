@@ -126,7 +126,7 @@ public class UnitOfWork : IDisposable
     /// <returns>Returneaza un intreg reprezentand locul liber, sau null daca nu exista</returns>
     public int? PrimulLocLiber(int spectacolId)
     {
-        IList<int> locuriSala = Enumerable.Range(1, SalaRepository.GetByID(1).NrLocuri).ToList();
+        IList<int> locuriSala = Enumerable.Range(1, SalaRepository.Get().First().NrLocuri).ToList();
 
         IList<int> locuriVandute = VanzariLocuriRepository.Get()
                                                           .Where(vanzareLoc => VanzareaEstePentruSpectacol(vanzareLoc.VanzareId, spectacolId))
@@ -144,7 +144,7 @@ public class UnitOfWork : IDisposable
 
     public IList<int> LocuriLibere(int spectacolId)
     {
-        IList<int> locuriSala = Enumerable.Range(1, SalaRepository.GetByID(1).NrLocuri).ToList();
+        IList<int> locuriSala = Enumerable.Range(1, SalaRepository.Get().First().NrLocuri).ToList();
 
         IList<int> locuriVandute = VanzariLocuriRepository.Get()
                                                           .Where(vanzareLoc => VanzareaEstePentruSpectacol(vanzareLoc.VanzareId, spectacolId))

@@ -96,7 +96,7 @@ namespace Server
 
                 foreach (Vanzare vanzare in vanzari)
                 {
-                    int locuriMaxime = unitOfWork.SalaRepository.GetByID(1).NrLocuri;
+                    int locuriMaxime = unitOfWork.SalaRepository.Get().First().NrLocuri;
                     var locuriVandute = unitOfWork.VanzariLocuriRepository.Get(locVandut => locVandut.VanzareId == vanzare.Id);
 
                     nrLocuriOcupate += locuriVandute.GroupBy(locVandut => locVandut.Loc).Count();
